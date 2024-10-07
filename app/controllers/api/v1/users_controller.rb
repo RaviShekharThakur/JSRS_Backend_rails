@@ -1,5 +1,5 @@
 class Api::V1::UsersController < ApiBaseController
-  before_action :load_resource!, only: %i[show destroy]
+  before_action :load_resource!, only: %i[show edit destroy update]
 
   def index
     @users = User.all.order(created_at: :desc)
@@ -17,6 +17,18 @@ class Api::V1::UsersController < ApiBaseController
 
   def show
     render_show_success_response(@user, UserSerializer, {}, 200,"User fetched successfully")
+  end
+
+  def edit
+    render_show_success_response(@user, UserSerializer, {}, 200,"User fetched successfully")
+  end
+
+  def update
+    if @user.update(user_params)
+      render_show_success_response(@user, UserSerializer, {}, 200,"User updated successfully")
+    else
+      respond_with_error(@user.errors.full_messages.join(", "), 422)
+    end
   end
 
   def destroy
