@@ -1,37 +1,37 @@
-class Api::V1::UsersController < ApplicationController
-  before_action :set_user, only: %i[show destroy]
+class Api::V1::UsersController < ApiBaseController
+  before_action :load_resource!, only: %i[show destroy]
 
   def index
-    users = User.all.order(created_at: :desc)
-    render json: users
+    @users = User.all.order(created_at: :desc)
+    render_listing_success_response(@users, UserSerializer, {}, 200,"Users fetched successfully")
   end
 
   def create
-    user = User.new(user_params)
-    if user.save
-      render json: user, status: :created
+    @user = User.new(user_params)
+    if @user.save
+      render_show_success_response(@user, UserSerializer, {}, 201,"User created successfully")
     else
-      render json: user.errors, status: :unprocessable_entity
+      respond_with_error(@user.errors.full_messages.join(", "), 422)
     end
   end
 
   def show
-    if @user
-      render json: @user
-    else
-      render json: { error: "User not found" }, status: :not_found
-    end
+    render_show_success_response(@user, UserSerializer, {}, 200,"User fetched successfully")
   end
 
   def destroy
-    @user&.destroy
-    render json: { message: "User deleted" }
+     if @user&.destroy
+      respond_success_message("User deleted", 201)
+    else
+      respond_with_error(@user.errors.full_messages.join(", "), 422)
+    end
   end
 
   private
 
-  def set_user
+  def load_resource!
     @user = User.find_by(id: params[:id])
+    render json: { error: "User not found" }, status: 404 if @user.blank? 
   end
 
   def user_params
