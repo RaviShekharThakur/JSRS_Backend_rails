@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  location: MyString
+  description: MyText
+  latitude: 9.99
+  longitude: 9.99
+  founding_date: 2024-10-07
+  deity: MyString
+
+two:
+  name: MyString
+  location: MyString
+  description: MyText
+  latitude: 9.99
+  longitude: 9.99
+  founding_date: 2024-10-07
+  deity: MyString
