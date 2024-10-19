@@ -1,5 +1,6 @@
 class ApiBaseController < ActionController::API
   before_action :set_active_storage_url_options
+  # before_action :authenticate_user!
 
   def respond_with_error(error_message, code)
     render json: {
@@ -43,5 +44,13 @@ class ApiBaseController < ActionController::API
 
   def set_active_storage_url_options
     ActiveStorage::Current.url_options = { host: request.base_url }
+  end
+
+  def authenticate_user!
+    if user_signed_in?
+      super
+    else
+      redirect_to root_path, alert: 'You need to sign in or sign up before continuing.'
+    end
   end
 end
